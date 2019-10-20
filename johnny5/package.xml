@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>johnny5</name>
+  <version>0.1.0</version>
+  <description>ROS packages for the Lynxmotion Johnny 5 Robot</description>
+  <maintainer email="matthew.w.richard@gmail.com">Matt Richard</maintainer>
+  <url type="repository">https://github.com/mattrichard/johnny5</url>
+  <url type="bugtracker">https://github.com/mattrichard/johnny5/issues</url>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>johnny5_description</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
