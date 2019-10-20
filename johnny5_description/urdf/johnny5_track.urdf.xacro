@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  <include filename="$(find johnny5_description)/urdf/common.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/johnny5_track.transmission.xacro" />
+
+  <property name="track_length" value="8.75" />
+  <property name="track_width"  value="2.0" />
+  <property name="track_height" value="3.75" />
+
+  <property name="track_wheel_radius" value="1.5" />
+  <property name="track_wheel_width"  value="1.75" />
+
+  <property name="motor_radius" value="0.725" />
+  <property name="motor_length" value="1.5" />
+
+  <property name="deck_length" value="8.125" />
+  <property name="deck_width"  value="7.25" />
+  <property name="deck_height" value="0.125" />
+
+  <xacro:macro name="johnny5_track" params="prefix parent reflect">
+    <link name="${prefix}_track_link">
+      <inertial>
+        <mass value="1" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${track_length * SCALE} ${track_width * SCALE} ${track_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${track_length * SCALE} ${track_width * SCALE} ${track_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_track_joint" type="fixed">
+      <origin xyz="${(deck_length/2.0 - (track_length/2.0 - 2.0)) * SCALE} ${reflect * (deck_width + track_width)/2.0 * SCALE} ${(track_height/2.0 - 0.25) * SCALE}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}_track_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_track_link" material="Gazebo/Grey" />
+
+    <johnny5_track_wheel prefix="${prefix}" suffix="front" parent="${prefix}_track_link"
+                         x_loc="${(track_length/2.0 - 0.75) * SCALE}"
+                         y_loc="0"
+                         z_loc="${(-1.0*track_height/2.0 + 0.75) * SCALE}"
+                         reflect="${reflect}" />
+    <johnny5_track_wheel prefix="${prefix}" suffix="back" parent="${prefix}_track_link"
+                         x_loc="${(-1.0*track_length/2.0 + 0.75) * SCALE}"
+                         y_loc="0"
+                         z_loc="${(-1.0*track_height/2.0 + 0.75) * SCALE}"
+                         reflect="${reflect}"/>
+
+    <link name="${prefix}_motor_link">
+      <inertial>
+        <mass value="3" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="${M_PI/2.0} 0 0" />
+        <geometry>
+          <cylinder radius="${motor_radius * SCALE}" length="${motor_length * SCALE}" />
+        </geometry>
+        <material name="LightGrey" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${M_PI/2.0} 0 0" />
+        <geometry>
+          <cylinder radius="${motor_radius * SCALE}" length="${motor_length * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_motor_joint" type="fixed">
+      <origin xyz="${-1.0*(deck_length/2.0 - (track_length/2.0 - 2.0)) * SCALE} ${reflect * -1.0*(track_width + motor_length)/2.0 * SCALE} ${(track_height/2.0 - 0.75) * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_track_link" />
+      <child link="${prefix}_motor_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_motor_link" material="PR2/Grey3" />
+
+    <johnny5_track_wheel prefix="${prefix}" suffix="motor" parent="${prefix}_motor_link"
+                         x_loc="0"
+                         y_loc="${reflect * (motor_length + track_width)/2.0 * SCALE}"
+                         z_loc="0"
+                         reflect="${reflect}" />
+
+    <johnny5_wheel_transmission prefix="${prefix}" suffix="motor" reflect="${reflect}" />
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_track_wheel" params="prefix suffix parent x_loc y_loc z_loc reflect">
+    <link name="${prefix}_track_${suffix}_wheel_link">
+      <inertial>
+        <mass value="0.1" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="${M_PI/2.0} 0 0" />
+        <geometry>
+          <cylinder radius="${track_wheel_radius * SCALE}" length="${track_wheel_width * SCALE}" />
+        </geometry>
+        <material name="White" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="${M_PI/2.0} 0 0" />
+        <geometry>
+          <cylinder radius="${track_wheel_radius * SCALE}" length="${track_wheel_width * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_track_${suffix}_wheel_joint" type="continuous">
+      <origin xyz="${x_loc} ${y_loc} ${z_loc}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}_track_${suffix}_wheel_link" />
+      <axis xyz="0 1 0" />
+      <anchor xyz="0 0 0" />
+      <limit effort="100" velocity="100" k_velocity="0" />
+      <joint_properties damping="0.0" friction="0.0" />
+    </joint>
+
+    <johnny5_wheel_gazebo prefix="${prefix}" suffix="${suffix}" />
+    <johnny5_gazebo_material ref="${prefix}_track_${suffix}_wheel_link" material="Gazebo/White" />
+  </xacro:macro>
+</robot>

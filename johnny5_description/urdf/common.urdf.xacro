@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<robot>
+
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <property name="SCALE" value="0.0254" />
+
+  <!-- HS_422 Super Sport servo -->
+  <property name="HS_422_servo_max_speed"  value="6.544984695" /> <!-- 0.16 sec/60 degrees at 6.0 V-->
+  <property name="HS_422_servo_max_torque" value="0.402072649" /> <!-- 4.1 kg-cm stall torque at 6.0 V-->
+  <property name="HS_422_servo_mass"       value="0.0455" />
+  <!-- dimensions are in inches -->
+  <property name="HS_422_servo_length"             value="1.418" />
+  <property name="HS_422_servo_width"              value="0.780" />
+  <property name="HS_422_servo_height"             value="2.080" />
+  <property name="HS_422_servo_spline_length"      value="0.120" />
+  <property name="HS_422_servo_spline_base_length" value="0.092" />
+  <property name="HS_422_servo_spline_z_offset"    value="0.405" />
+  <property name="HS_422_servo_full_length"        value="1.63" />
+
+  <!-- HS_485HB Servo -->
+  <property name="HS_485HB_servo_max_speed"  value="5.817764173" /> <!-- 0.18 sec/60 degrees at 6.0 V -->
+  <property name="HS_485HB_servo_max_torque" value="0.588399" /> <!-- 6.0 kg-cm stall torque at 6.0 V -->
+  <property name="HS_485HB_servo_mass"       value="0.045" />
+  <!-- dimensions are in inches -->
+  <property name="HS_485HB_servo_length"             value="1.486" />
+  <property name="HS_485HB_servo_width"              value="0.780" />
+  <property name="HS_485HB_servo_height"             value="2.090" />
+  <property name="HS_485HB_servo_spline_length"      value="0.126" />
+  <property name="HS_485HB_servo_spline_base_length" value="0.088" />
+  <property name="HS_485HB_servo_spline_z_offset"    value="0.3935" />
+  <property name="HS_485HB_servo_full_length"        value="1.7" />
+
+  <!-- HS_645MG Ultra Torque servo -->
+  <property name="HS_645MG_servo_max_speed"  value="5.235987756" /> <!-- 0.20 sec/60 degrees at 6.0 V -->
+  <property name="HS_645MG_servo_max_torque" value="0.941438403" /> <!-- 9.6 kg-cm stall torque at 6.0 V -->
+  <property name="HS_645MG_servo_mass"       value="0.0552" />
+  <!-- dimensions are in inches -->
+  <property name="HS_645MG_servo_length"             value="1.480" />
+  <property name="HS_645MG_servo_width"              value="0.770" />
+  <property name="HS_645MG_servo_height"             value="2.100" />
+  <property name="HS_645MG_servo_spline_length"      value="0.126" />
+  <property name="HS_645MG_servo_spline_base_length" value="0.088" />
+  <property name="HS_645MG_servo_spline_z_offset"    value="0.394" />
+  <property name="HS_645MG_servo_full_length"        value="1.694" />
+
+</robot>

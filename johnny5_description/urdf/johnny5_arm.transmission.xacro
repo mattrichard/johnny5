@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="johnny5_arm_shoulder_roll_transmission" params="prefix">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_arm_shoulder_roll_trans">
+      <actuator name="${prefix}_arm_shoulder_roll_motor" />
+      <joint name="${prefix}_arm_shoulder_roll_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_arm_lift_transmission" params="prefix">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_arm_lift_trans">
+      <actuator name="${prefix}_arm_lift_motor" />
+      <joint name="${prefix}_arm_lift_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_arm_forearm_transmission" params="prefix">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_arm_forearm_trans">
+      <actuator name="${prefix}_arm_forearm_motor" />
+      <joint name="${prefix}_arm_forearm_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_arm_hand_transmission" params="prefix">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_arm_hand_trans">
+      <actuator name="${prefix}_arm_hand_motor" />
+      <joint name="${prefix}_arm_hand_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_arm_fingers_transmission" params="prefix">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_arm_fingers_base_trans">
+      <actuator name="${prefix}_arm_fingers_base_motor" />
+      <joint name="${prefix}_arm_fingers_base_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+</robot>

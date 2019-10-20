@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="johnny5_torso_transmission" params="name">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="torso_${name}_trans">
+      <actuator name="torso_${name}_motor" />
+      <joint name="torso_${name}_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+
+</robot>

@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  <include filename="$(find johnny5_description)/urdf/johnny5_arm.transmission.xacro" />
+
+  <property name="thumb_length" value="1.0" />
+  <property name="thumb_width"  value="0.25" />
+  <property name="thumb_height" value="1.5" />
+
+  <property name="fingers_length" value="2.0" />
+  <property name="fingers_width"  value="0.25" />
+  <property name="fingers_height" value="2.83" />
+
+  <property name="finger_tips_length" value="2.0" />
+  <property name="finger_tips_width"  value="1.25" />
+  <property name="finger_tips_height" value="0.25" />
+
+  <xacro:macro name="johnny5_arm" params="prefix parent reflect">
+    <link name="${prefix}_arm_shoulder_link">
+      <inertial>
+        <mass value="${HS_645MG_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_width * SCALE} ${(HS_645MG_servo_full_length + 0.15) * SCALE} ${HS_645MG_servo_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_width * SCALE} ${(HS_645MG_servo_full_length + 0.15) * SCALE} ${HS_645MG_servo_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_shoulder_joint" type="fixed">
+      <origin xyz="0 ${reflect*(torso_chest_width + HS_645MG_servo_full_length)/2.0 * SCALE} 0" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}_arm_shoulder_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_arm_shoulder_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_shoulder_roll_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 ${reflect*2.095/2.0 * SCALE} ${0.97/2 * SCALE}" rpy="${reflect*M_PI/4.0} 0 0" />
+        <geometry>
+          <box size="${2.07 * SCALE} ${2.095 * SCALE} ${0.97 * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 ${reflect*2.095/2.0 * SCALE} ${0.97/2 * SCALE}" rpy="${reflect*M_PI/4.0} 0 0" />
+        <geometry>
+          <box size="${2.07 * SCALE} ${2.095 * SCALE} ${0.97 * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_shoulder_roll_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 ${reflect*(HS_645MG_servo_full_length - 0.97)/2.0 * SCALE} ${HS_645MG_servo_spline_z_offset * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_shoulder_link" />
+      <child link="${prefix}_arm_shoulder_roll_link" />
+      <axis xyz="0 1 0" />
+      <!-- Note: Overtravel limits are 140, -7 degrees instead of 133, 0 -->
+      <limit lower="${-1.0 * M_PI / 2.0}" upper="${M_PI / 2.0}" effort="${HS_645MG_servo_max_torque}" velocity="${HS_645MG_servo_max_speed}" />
+      <!--safety_controller k_position="100" k_velocity="3" soft_lower_limit="${-2.3213+0.2}" soft_upper_limit="${0.00-0.15}" /-->
+      <!--calibration falling="${-1.1606 + cal_r_elbow_flex_flag}"/-->
+      <dynamics damping="1.0" />
+    </joint>
+
+    <johnny5_arm_shoulder_roll_transmission prefix="${prefix}" />
+    <johnny5_gazebo_material ref="${prefix}_arm_shoulder_roll_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_lift_link">
+      <inertial>
+        <mass value="${HS_645MG_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 ${-1.0*HS_645MG_servo_spline_z_offset * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_full_length * SCALE} ${HS_645MG_servo_width * SCALE} ${HS_645MG_servo_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 ${-1.0*HS_645MG_servo_spline_z_offset * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_full_length * SCALE} ${HS_645MG_servo_width * SCALE} ${HS_645MG_servo_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_lift_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 ${reflect*(2.095 - 0.97/2.0) * SCALE} ${0.97*SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_shoulder_roll_link" />
+      <child link="${prefix}_arm_lift_link" />
+      <axis xyz="1 0 0" />
+      <!-- Note: Overtravel limits are 140, -7 degrees instead of 133, 0 -->
+      <limit lower="${(reflect - 1.0) * M_PI / 2.0}" upper="${(reflect + 1.0) * M_PI / 2.0}" effort="${HS_645MG_servo_max_torque}" velocity="${HS_645MG_servo_max_speed}" />
+      <!--safety_controller k_position="100" k_velocity="3" soft_lower_limit="${-2.3213+0.2}" soft_upper_limit="${0.00-0.15}" /-->
+      <!--calibration falling="${-1.1606 + cal_r_elbow_flex_flag}"/-->
+      <dynamics damping="1.0" />
+    </joint>
+
+    <johnny5_arm_lift_transmission prefix="${prefix}" />
+    <johnny5_gazebo_material ref="${prefix}_arm_lift_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_elbow_link">
+      <inertial>
+        <mass value="${HS_645MG_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_width * SCALE} ${HS_645MG_servo_full_length * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_width * SCALE} ${HS_645MG_servo_full_length * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_elbow_joint" type="fixed">
+      <origin xyz="0 ${reflect*HS_645MG_servo_width * SCALE} ${-1.0*(HS_645MG_servo_spline_z_offset + (HS_645MG_servo_height - HS_645MG_servo_full_length)/2.0 + 0.125) * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_lift_link" />
+      <child link="${prefix}_arm_elbow_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_arm_elbow_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_forearm_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0"
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 ${reflect*-0.97/2.0 * SCALE} ${-1.0 * 2.095 / 2.0 * SCALE}" rpy="${reflect * -1.0 * M_PI/4.0} 0 0" />
+        <geometry>
+          <box size="${2.07 * SCALE} ${0.97 * SCALE} ${2.095 * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 ${reflect*-0.97/2.0 * SCALE} ${-1.0 * 2.095 / 2.0 * SCALE}" rpy="${reflect * -1.0 * M_PI/4.0} 0 0" />
+        <geometry>
+          <box size="${2.07 * SCALE} ${0.97 * SCALE} ${2.095 * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_forearm_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="${HS_645MG_servo_spline_z_offset * SCALE} 0 ${-1.0 * (HS_645MG_servo_full_length - 0.97) / 2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_elbow_link" />
+      <child link="${prefix}_arm_forearm_link" />
+      <axis xyz="0 0 1" />
+      <!-- Note: Overtravel limits are 140, -7 degrees instead of 133, 0 -->
+      <limit lower="-1.57" upper="1.57" effort="${HS_645MG_servo_max_torque}" velocity="${HS_645MG_servo_max_speed}" />
+      <!--safety_controller k_position="100" k_velocity="3" soft_lower_limit="${-2.3213+0.2}" soft_upper_limit="${0.00-0.15}" /-->
+      <!--calibration falling="${-1.1606 + cal_r_elbow_flex_flag}"/-->
+      <dynamics damping="1.0" />
+    </joint>
+
+    <johnny5_arm_forearm_transmission prefix="${prefix}" />
+    <johnny5_gazebo_material ref="${prefix}_arm_forearm_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_hand_link">
+      <inertial>
+        <mass value="${HS_485HB_servo_mass + HS_422_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.002" ixy="0.0" ixz="0.0"
+                 iyy="0.002" iyz="0.0" 
+                 izz="0.002" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 ${reflect*(HS_485HB_servo_width + 0.2)/2.0 * SCALE} ${-1.0*HS_485HB_servo_spline_z_offset * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_485HB_servo_full_length * SCALE} ${(HS_485HB_servo_width + HS_422_servo_width + 0.2) * SCALE} ${HS_485HB_servo_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 ${reflect*(HS_485HB_servo_width + 0.2)/2.0 * SCALE} ${-1.0*HS_485HB_servo_spline_z_offset * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_485HB_servo_full_length * SCALE} ${(HS_485HB_servo_width + HS_422_servo_width + 0.2) * SCALE} ${HS_485HB_servo_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_hand_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 ${reflect*-2.095/2.0*SCALE} ${(-2.095 - 0.97)/2.0*SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_forearm_link" />
+      <child link="${prefix}_arm_hand_link" />
+      <axis xyz="1 0 0" />
+      <!-- Note: Overtravel limits are 140, -7 degrees instead of 133, 0 -->
+      <limit lower="${(-1.0 - reflect) * M_PI / 4.0}" upper="${(1.0 - reflect) * M_PI / 4.0}" effort="${HS_485HB_servo_max_torque}" velocity="${HS_485HB_servo_max_speed}" />
+      <!--safety_controller k_position="100" k_velocity="3" soft_lower_limit="${-2.3213+0.2}" soft_upper_limit="${0.00-0.15}" /-->
+      <!--calibration falling="${-1.1606 + cal_r_elbow_flex_flag}"/-->
+      <dynamics damping="1.0" />
+    </joint>
+
+    <johnny5_arm_hand_transmission prefix="${prefix}" />
+    <johnny5_gazebo_material ref="${prefix}_arm_hand_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_thumb_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 ${reflect * thumb_width / 2.0 * SCALE} ${-1.0 * thumb_height / 2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${thumb_length * SCALE} ${thumb_width * SCALE} ${thumb_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 ${reflect * thumb_width / 2.0 * SCALE} ${-1.0 * thumb_height / 2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${thumb_length * SCALE} ${thumb_width * SCALE} ${thumb_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_thumb_joint" type="fixed">
+      <origin xyz="0 0 ${-1.0*(HS_485HB_servo_spline_z_offset + HS_485HB_servo_height / 2.0) * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_hand_link" />
+      <child link="${prefix}_arm_thumb_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_arm_hand_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_fingers_base_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${2.0 * SCALE} ${0.96 * SCALE} ${0.96 * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${2.0 * SCALE} ${0.96 * SCALE} ${0.96 * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_fingers_base_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 ${reflect * (0.96 + 0.2 * HS_485HB_servo_width + HS_422_servo_width) / 2.0 * SCALE} ${-1.0*(HS_485HB_servo_spline_z_offset + HS_422_servo_spline_z_offset) * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_hand_link" />
+      <child link="${prefix}_arm_fingers_base_link" />
+      <axis xyz="1 0 0" />
+      <!-- Note: Overtravel limits are 140, -7 degrees instead of 133, 0 -->
+      <limit lower="${(reflect - 1.0) * M_PI / 4.0}" upper="${(reflect + 1.0) * M_PI / 4.0}"
+             effort="${HS_422_servo_max_torque}" velocity="${HS_422_servo_max_speed}" />
+      <!--safety_controller k_position="100" k_velocity="3" soft_lower_limit="${-2.3213+0.2}" soft_upper_limit="${0.00-0.15}" /-->
+      <!--calibration falling="${-1.1606 + cal_r_elbow_flex_flag}"/-->
+      <dynamics damping="1.0" />
+    </joint>
+
+    <johnny5_arm_fingers_transmission prefix="${prefix}" />
+    <johnny5_gazebo_material ref="${prefix}_arm_fingers_base_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_fingers_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${fingers_length * SCALE} ${fingers_width * SCALE} ${fingers_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${fingers_length * SCALE} ${fingers_width * SCALE} ${fingers_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_fingers_joint" type="fixed"> 
+      <origin xyz="0 ${reflect * (0.96 - fingers_width) / 2.0 * SCALE} ${-1.0*(fingers_height - 0.96) / 2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_fingers_base_link" />
+      <child link="${prefix}_arm_fingers_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_arm_fingers_link" material="Gazebo/Grey" />
+
+    <link name="${prefix}_arm_finger_tips_link">
+      <inertial>
+        <mass value="0.001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${finger_tips_length * SCALE} ${finger_tips_width * SCALE} ${finger_tips_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${finger_tips_length * SCALE} ${finger_tips_width * SCALE} ${finger_tips_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}_arm_finger_tips_joint" type="fixed">
+      <origin xyz="0 ${reflect * -1.0 * (finger_tips_width - fingers_width) / 2.0 * SCALE} ${-1.0*(fingers_height - finger_tips_height) / 2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="${prefix}_arm_fingers_link" />
+      <child link="${prefix}_arm_finger_tips_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="${prefix}_arm_finger_tips_link" material="Gazebo/Grey" />
+  </xacro:macro>
+</robot>

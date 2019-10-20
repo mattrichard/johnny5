@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="johnny5_head" params="parent x_loc y_loc z_loc">
+    <link name="neck_link">
+      <inertial>
+        <mass value="${HS_422_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="${-1.0 * HS_422_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_422_servo_height * SCALE} ${HS_422_servo_width * SCALE} ${HS_422_servo_full_length * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="${-1.0 * HS_422_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_422_servo_height * SCALE} ${HS_422_servo_width * SCALE} ${HS_422_servo_full_length * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="neck_joint" type="fixed">
+      <origin xyz="${x_loc} ${y_loc} ${z_loc + HS_422_servo_full_length / 2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="neck_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="neck_link" material="Gazebo/Grey" />
+  </xacro:macro>
+</robot>

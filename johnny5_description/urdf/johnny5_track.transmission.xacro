@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="johnny5_wheel_transmission" params="prefix suffix reflect">
+    <transmission type="pr2_mechanism_model/SimpleTransmission" name="${prefix}_track_${suffix}_wheel_trans">
+      <actuator name="${prefix}_track_${suffix}_wheel_motor" />
+      <joint name="${prefix}_track_${suffix}_wheel_joint" />
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </transmission>
+  </xacro:macro>
+
+</robot>

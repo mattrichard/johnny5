@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="johnny5_wheel_gazebo" params="prefix suffix">
+    <gazebo reference="${parent}_track_${suffix}_wheel_link">
+      <mu1 value="100.0" />
+      <mu2 value="100.0" />
+      <kp  value="1000000.0" />
+      <kd  value="1.0" />
+    </gazebo>
+
+    <gazebo reference="${prefix}_track_${suffix}_wheel_link">
+      <material value="Gazebo/White" />
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="johnny5_gazebo_material" params="ref material">
+    <gazebo reference="${prefix}_motor_link">
+      <material value="Gazebo/Grey" />
+    </gazebo>
+  </xacro:macro>
+</robot>

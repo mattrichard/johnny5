@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  <include filename="$(find johnny5_description)/urdf/common.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/materials.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/johnny5_track.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/johnny5_torso.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/gazebo.urdf.xacro" />
+
+  <property name="deck_length" value="8.125" />
+  <property name="deck_width"  value="7.25" />
+  <property name="deck_height" value="0.125" />
+
+  <xacro:macro name="johnny5_body">
+
+    <link name="base_footprint">
+      <inertial>
+        <mass value="0.0001" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
+                 iyy="0.0001" iyz="0.0" 
+                 izz="0.0001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+        <material name="Green" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0.017" rpy="0 0 0" />
+        <geometry>
+          <box size="0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="base_link">
+      <inertial>
+        <mass value="2" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 ${deck_height/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${deck_length * SCALE} ${deck_width * SCALE} ${deck_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 ${deck_height/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${deck_length * SCALE} ${deck_width * SCALE} ${deck_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="base_footprint_joint" type="fixed">
+      <origin xyz="0 0 ${1.0 * SCALE}" rpy="0 0 0" />
+      <parent link="base_footprint" />
+      <child link="base_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="base_link" material="Gazebo/Grey" />
+
+    <link name="deck_link">
+      <inertial>
+        <mass value="2" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 ${deck_height/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${deck_length * SCALE} ${deck_width * SCALE} ${deck_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 ${deck_height/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${deck_length * SCALE} ${deck_width * SCALE} ${deck_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="deck_joint" type="fixed">
+      <origin xyz="0 0 ${(1.5 + deck_height) * SCALE}" rpy="0 0 0" />
+      <parent link="base_link" />
+      <child link="deck_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="deck_link" material="Gazebo/Grey" />
+
+    <johnny5_track prefix="left" parent="base_link" reflect="1" />
+    <johnny5_track prefix="right" parent="base_link" reflect="-1" />
+
+    <johnny5_base_gazebo />
+
+    <johnny5_torso parent="deck_link" x_loc="${deck_length / 2.0}" y_loc="0" z_loc="${deck_height}" />
+
+  </xacro:macro>
+</robot>

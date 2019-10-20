@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+
+<robot name="johnny5_hardware"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  <include filename="$(find johnny5_description)/urdf/johnny5_arm.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/johnny5_head.urdf.xacro" />
+  <include filename="$(find johnny5_description)/urdf/johnny5_torso.transmission.xacro" />
+
+  <property name="torso_base_radius" value="1.85" />
+  <property name="torso_base_length" value="1.66" />
+
+  <property name="torso_pan_radius" value="1.85" />
+  <property name="torso_pan_length" value="0.159" />
+  <property name="torso_pan_offset" value="0.09" />
+
+  <property name="torso_lower_tilt_length" value="0.97" />
+  <property name="torso_lower_tilt_width"  value="2.08" />
+  <property name="torso_lower_tilt_height" value="3.18" />
+
+  <property name="torso_upper_tilt_length" value="1.0" />
+  <property name="torso_upper_tilt_width"  value="1.0" />
+  <property name="torso_upper_tilt_height" value="3.0" />
+
+  <property name="torso_chest_length" value="0.94" />
+  <property name="torso_chest_width"  value="1.758" />
+  <property name="torso_chest_height" value="1.625" />
+
+  <xacro:macro name="johnny5_torso" params="parent x_loc y_loc z_loc">
+    <link name="torso_base_link">
+      <inertial>
+        <mass value="${HS_422_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${torso_base_radius * SCALE}" length="${torso_base_length * SCALE}"/>
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${torso_base_radius * SCALE}" length="${torso_base_length * SCALE}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_base_joint" type="fixed">
+      <origin xyz="${(x_loc - torso_base_radius) * SCALE} ${y_loc} ${(z_loc + torso_base_length/2.0) * SCALE}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="torso_base_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="torso_base_link" material="Gazebo/Grey" />
+
+    <link name="torso_pan_link">
+      <inertial>
+        <mass value="0.005" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 ${torso_pan_length/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${torso_pan_radius * SCALE}" length="${torso_pan_length * SCALE}"/>
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 ${torso_pan_length/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="${torso_pan_radius * SCALE}" length="${torso_pan_length * SCALE}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_pan_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 0 ${(torso_base_length/2.0 + torso_pan_offset) * SCALE}" rpy="0 0 0" />
+      <parent link="torso_base_link" />
+      <child link="torso_pan_link" />
+      <axis xyz="0 0 1" />
+      <limit lower="${-1.0*M_PI/2.0}" upper="${M_PI/2.0}" effort="${HS_422_servo_max_torque}" velocity="${HS_422_servo_max_speed}" />
+      <dynamics damping="0.1" />
+      <!--joint_properties damping="0.0" friction="0.0" /-->
+    </joint>
+
+    <johnny5_torso_transmission name="pan" />
+    <johnny5_gazebo_material ref="torso_pan_link" material="Gazebo/Grey" />
+
+    <link name="torso_lower_servo_link">
+      <inertial>
+        <mass value="${HS_645MG_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="${HS_645MG_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_length * SCALE} ${HS_645MG_servo_width * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="${HS_645MG_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_length * SCALE} ${HS_645MG_servo_width * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_lower_servo_joint" type="fixed">
+      <origin xyz="0 0 ${(torso_pan_length + HS_645MG_servo_width/2) * SCALE}" rpy="0 0 0" />
+      <parent link="torso_pan_link" />
+      <child link="torso_lower_servo_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="torso_lower_servo_link" material="Gazebo/Grey" />
+
+    <link name="torso_lower_tilt_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 ${(torso_lower_tilt_height - torso_lower_tilt_length)/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_lower_tilt_length * SCALE} ${torso_lower_tilt_width * SCALE} ${torso_lower_tilt_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 ${(torso_lower_tilt_height - torso_lower_tilt_length)/2.0 * SCALE}" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_lower_tilt_length * SCALE} ${torso_lower_tilt_width * SCALE} ${torso_lower_tilt_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_lower_tilt_joint" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="torso_lower_servo_link" />
+      <child link="torso_lower_tilt_link" />
+      <axis xyz="0 1 0" />
+      <limit lower="${-1.0 * M_PI / 4.0}" upper="${M_PI / 4.0}" effort="${HS_645MG_servo_max_torque}" velocity="${HS_645MG_servo_max_speed}" />
+      <dynamics damping="0.1" />
+      <!--joint_properties damping="0.0" friction="0.0" /-->
+    </joint>
+
+    <johnny5_torso_transmission name="lower_tilt" />
+    <johnny5_gazebo_material ref="torso_lower_tilt_link" material="Gazebo/Grey" />
+
+    <link name="torso_upper_servo_link">
+      <inertial>
+        <mass value="${HS_645MG_servo_mass}" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="${HS_645MG_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_length * SCALE} ${HS_645MG_servo_width * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="${-1.0*HS_645MG_servo_spline_z_offset * SCALE} 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${HS_645MG_servo_height * SCALE} ${HS_645MG_servo_length * SCALE} ${HS_645MG_servo_width * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_upper_servo_joint" type="revolute"> <!-- revolute -->
+      <origin xyz="0 0 ${(torso_lower_tilt_height - (torso_lower_tilt_length + HS_645MG_servo_width)/2.0) * SCALE}" rpy="0 0 0" />
+      <parent link="torso_lower_tilt_link" />
+      <child link="torso_upper_servo_link" />
+      <axis xyz="0 1 0" />
+      <limit lower="${-1.0 * M_PI / 4.0}" upper="${M_PI / 4.0}" effort="${HS_645MG_servo_max_torque}" velocity="${HS_645MG_servo_max_speed}" />
+      <dynamics damping="0.1" />
+      <!--joint_properties damping="0.0" friction="0.0" /-->
+    </joint>
+
+    <johnny5_torso_transmission name="upper_servo" />
+    <johnny5_gazebo_material ref="torso_upper_servo_link" material="Gazebo/Grey" />
+
+    <link name="torso_upper_tilt_link">
+      <inertial>
+        <mass value="0.1" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                 iyy="0.01" iyz="0.0" 
+                 izz="0.01" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_upper_tilt_length * SCALE} ${torso_upper_tilt_width * SCALE} ${torso_upper_tilt_height * SCALE}" />
+        </geometry>
+        <material name="LightGrey" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_upper_tilt_length * SCALE} ${torso_upper_tilt_width * SCALE} ${torso_upper_tilt_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_upper_tilt_joint" type="fixed">
+      <origin xyz="0 0 ${torso_upper_tilt_height/2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="torso_upper_servo_link" />
+      <child link="torso_upper_tilt_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="torso_upper_tilt_link" material="Gazebo/White" />
+
+    <link name="torso_chest_link">
+      <inertial>
+        <mass value="0.01" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+                 iyy="0.001" iyz="0.0" 
+                 izz="0.001" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_chest_length * SCALE} ${torso_chest_width * SCALE} ${torso_chest_height * SCALE}" />
+        </geometry>
+        <material name="Black" />
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${torso_chest_length * SCALE} ${torso_chest_width * SCALE} ${torso_chest_height * SCALE}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="torso_chest_joint" type="fixed">
+      <origin xyz="${torso_upper_tilt_length/2.0 * SCALE} 0 ${(torso_upper_tilt_height - 0.35)/2.0 * SCALE}" rpy="0 0 0" />
+      <parent link="torso_upper_tilt_link" />
+      <child link="torso_chest_link" />
+    </joint>
+
+    <johnny5_gazebo_material ref="torso_chest_link" material="Gazebo/Grey" />
+
+    <johnny5_head parent="torso_upper_tilt_link" x_loc="0" y_loc="0" z_loc="${(torso_upper_tilt_height / 2.0 + 0.369) * SCALE}" />
+
+    <johnny5_arm prefix="left" parent="torso_chest_link" reflect="1.0" />
+    <johnny5_arm prefix="right" parent="torso_chest_link" reflect="-1.0" />
+  </xacro:macro>
+</robot>
