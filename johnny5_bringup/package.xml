@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>johnny5_bringup</name>
+  <version>0.1.0</version>
+  <description>ROS launch scripts for starting the Lynxmotion Johnny 5.</description>
+  <maintainer email="matthew.w.richard@gmail.com">Matt Richard</maintainer>
+  <license>Apache License 2.0</license>
+
+  <url type="repository">https://github.com/mattrichard/johnny5</url>
+  <url type="bugtracker">https://github.com/mattrichard/johnny5/issues</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>johnny5_description</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
