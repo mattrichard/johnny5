@@ -1,0 +1,134 @@
+ssc32u:
+  ros__parameters:
+    port: "/dev/ttyUSB0"
+    baud: 115200
+
+torso_controller:
+  ros__parameters:
+    publish_joint_states: true
+    publish_rate: 5
+    joints:
+      torso_pan_joint:
+        channel: 0
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      torso_lower_lift_joint:
+        channel: 1
+        max_angle: 0.785398163 # PI/4
+        min_angle: -0.785398163 # -PI/4
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      torso_upper_servo_joint:
+        channel: 2
+        max_angle: 0.785398163 # PI/4
+        min_angle: -0.785398163 # -PI/4
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      head_pan_joint:
+        channel: 13
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+
+right_arm_controller:
+  ros__parameters:
+    publish_joint_states: true
+    publish_rate: 5
+    joints:
+      right_arm_shoulder_roll_joint:
+        channel: 3
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      right_arm_lift_joint:
+        channel: 4
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      right_arm_forearm_joint:
+        channel: 5
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      right_arm_hand_joint:
+        channel: 6
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      right_arm_fingers_base_joint:
+        channel: 7
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+
+left_arm_controller:
+  ros__parameters:
+    publish_joint_states: true
+    publish_rate: 5
+    joints:
+      left_arm_shoulder_roll_joint:
+        channel: 8
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      left_arm_lift_joint:
+        channel: 9
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      left_arm_forearm_joint:
+        channel: 10
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      left_arm_hand_joint:
+        channel: 11
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
+      left_arm_fingers_base_joint:
+        channel: 12
+        max_angle: 1.57
+        min_angle: -1.57
+        offset_angle: 0.0
+        default_angle: 0.0
+        initialize: true
+        invert: false
