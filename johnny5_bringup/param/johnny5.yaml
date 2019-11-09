@@ -2,11 +2,11 @@ ssc32u:
   ros__parameters:
     port: "/dev/ttyUSB0"
     baud: 115200
+    publish_rate: 5
 
 torso_controller:
   ros__parameters:
     publish_joint_states: true
-    publish_rate: 5
     joints:
       torso_pan_joint:
         channel: 0
