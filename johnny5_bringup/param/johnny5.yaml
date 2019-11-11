@@ -132,3 +132,11 @@ left_arm_controller:
         default_angle: 0.0
         initialize: true
         invert: false
+
+sabertooth_2x5_controller:
+  ros__parameters:
+    ch1_channel: 14
+    ch2_channel: 15
+    wheel_diam: 0.635
+    wheel_base: 0.2286
+    independent_control: true

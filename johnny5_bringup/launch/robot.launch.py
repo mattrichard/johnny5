@@ -56,6 +56,10 @@ def generate_launch_description():
             package='ssc32u_controllers', node_executable='servo_controller_node', output='screen',
             parameters=[param_dir], remappings=[('command', 'left_arm/command'), ('joint_states', 'left_arm/joint_states')],
             node_name='left_arm_controller'),
+
+        launch_ros.actions.Node(
+            package='ssc32u_controllers', node_executable='sabertooth_2x5_controller_node', output='screen', parameters=[param_dir])
+        )
     ])
 
     # TODO: Figure out why parameters not applying with components
