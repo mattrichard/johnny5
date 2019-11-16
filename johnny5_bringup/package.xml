@@ -12,7 +12,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>ssc32u_controllers</exec_depend>
+  <exec_depend>lynxmotion_ssc32u_controllers</exec_depend>
   <exec_depend>johnny5_description</exec_depend>
 
   <export>
