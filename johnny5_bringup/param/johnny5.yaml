@@ -1,4 +1,4 @@
-ssc32u:
+ssc32u_driver:
   ros__parameters:
     port: "/dev/ttyUSB0"
     baud: 115200

@@ -40,25 +40,25 @@ def generate_launch_description():
 
     return launch.LaunchDescription([
         launch_ros.actions.Node(
-            package='ssc32u_driver', node_executable='ssc32u_node', output='screen', parameters=[param_dir]),
+            package='lynxmotion_ssc32u_driver', node_executable='ssc32u_driver', output='screen', parameters=[param_dir]),
 
         launch_ros.actions.Node(
-            package='ssc32u_controllers', node_executable='servo_controller_node', output='screen',
+            package='lynxmotion_ssc32u_controllers', node_executable='servo_controller', output='screen',
             parameters=[param_dir], remappings=[('command', 'torso/command'), ('joint_states', 'torso/joint_states')],
             node_name='torso_controller'),
 
         launch_ros.actions.Node(
-            package='ssc32u_controllers', node_executable='servo_controller_node', output='screen',
+            package='lynxmotion_ssc32u_controllers', node_executable='servo_controller', output='screen',
             parameters=[param_dir], remappings=[('command', 'right_arm/command'), ('joint_states', 'right_arm/joint_states')],
             node_name='right_arm_controller'),
 
         launch_ros.actions.Node(
-            package='ssc32u_controllers', node_executable='servo_controller_node', output='screen',
+            package='lynxmotion_ssc32u_controllers', node_executable='servo_controller', output='screen',
             parameters=[param_dir], remappings=[('command', 'left_arm/command'), ('joint_states', 'left_arm/joint_states')],
             node_name='left_arm_controller'),
 
         launch_ros.actions.Node(
-            package='ssc32u_controllers', node_executable='sabertooth_2x5_controller_node', output='screen', parameters=[param_dir])
+            package='lynxmotion_ssc32u_controllers', node_executable='sabertooth_2x5_controller', output='screen', parameters=[param_dir])
     ])
 
     # TODO: Figure out why parameters not applying with components
@@ -70,28 +70,28 @@ def generate_launch_description():
     #         parameters=[param_dir],
     #         composable_node_descriptions=[
     #             ComposableNode(
-    #                 package='ssc32u_driver',
-    #                 node_plugin='ssc32u_driver::SSC32UDriver',
+    #                 package='lynxmotion_ssc32u_driver',
+    #                 node_plugin='lynxmotion_ssc32u_driver::SSC32UDriverNode',
     #                 node_name='ssc32u',
     #                 parameters=[param_dir]),
 
     #             ComposableNode(
-    #                 package='ssc32u_controllers',
-    #                 node_plugin='ssc32u_controllers::ServoController',
+    #                 package='lynxmotion_ssc32u_controllers',
+    #                 node_plugin='lynxmotion_ssc32u_controllers::ServoControllerNode',
     #                 node_name='torso_controller',
     #                 parameters=[param_dir],
     #                 remappings=[('command', 'torso/command'), ('joint_states', 'torso/joint_states')]),
 
     #             ComposableNode(
-    #                 package='ssc32u_controllers',
-    #                 node_plugin='ssc32u_controllers::ServoController',
+    #                 package='lynxmotion_ssc32u_controllers',
+    #                 node_plugin='lynxmotion_ssc32u_controllers::ServoControllerNode',
     #                 node_name='right_arm_controller',
     #                 parameters=[param_dir],
     #                 remappings=[('command', 'right_arm/command'), ('joint_states', 'right_arm/joint_states')]),
 
     #             ComposableNode(
-    #                 package='ssc32u_controllers',
-    #                 node_plugin='ssc32u_controllers::ServoController',
+    #                 package='lynxmotion_ssc32u_controllers',
+    #                 node_plugin='lynxmotion_ssc32u_controllers::ServoControllerNode',
     #                 node_name='left_arm_controller',
     #                 parameters=[param_dir],
     #                 remappings=[('command', 'left_arm/command'), ('joint_states', 'left_arm/joint_states')])
