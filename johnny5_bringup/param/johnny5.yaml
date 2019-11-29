@@ -1,6 +1,6 @@
 ssc32u_driver:
   ros__parameters:
-    port: "/dev/ttyUSB0"
+    port: "/dev/rfcomm0"
     baud: 115200
     publish_rate: 5
 
