@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='matt',
     maintainer_email='matthew.w.richard@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Teleoperation for the Johnny 5 robot',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
