@@ -4,7 +4,7 @@
   <name>johnny5_description</name>
   <version>0.0.0</version>
   <description>Lynxmotion Johnny 5 URDF description</description>
-  <maintainer email="mattric@gmail.com">matt</maintainer>
+  <maintainer email="matthew.w.richard@gmail.com">matt</maintainer>
   <url type="repository">https://github.com/mattrichard/johnny5</url>
   <url type="bugtracker">https://github.com/mattrichard/johnny5/issues</url>
   <license>Apache License 2.0</license>
